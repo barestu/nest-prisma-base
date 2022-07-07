@@ -1,3 +1,8 @@
+import {
+  HttpStatus,
+  UnprocessableEntityException,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { PrismaService } from 'nestjs-prisma';
@@ -11,8 +16,18 @@ async function bootstrap() {
   const prismaService = app.get(PrismaService);
   const port = configservice.get<AppConfig>('app').port;
 
-  await prismaService.enableShutdownHooks(app);
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+      exceptionFactory: (errors) => new UnprocessableEntityException(errors),
+    }),
+  );
+
   setupSwagger(app);
+
+  await prismaService.enableShutdownHooks(app);
   await app.listen(port);
 }
 bootstrap();
