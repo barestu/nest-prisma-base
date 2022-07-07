@@ -16,6 +16,7 @@ export function setupSwagger(app: INestApplication) {
   const document = SwaggerModule.createDocument(app, documentConfig);
   SwaggerModule.setup('docs', app, document, {
     swaggerOptions: {
+      tagsSorter: 'alpha',
       persistAuthorization: true,
     },
   });

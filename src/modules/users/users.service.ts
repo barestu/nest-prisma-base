@@ -22,9 +22,15 @@ export class UsersService {
     return this.prismaService.user.findMany();
   }
 
-  findOne(id: number): Promise<User> {
+  findById(id: number): Promise<User> {
     return this.prismaService.user.findUnique({
       where: { id },
+    });
+  }
+
+  findByEmail(email: string): Promise<User> {
+    return this.prismaService.user.findUnique({
+      where: { email },
     });
   }
 

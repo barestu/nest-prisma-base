@@ -16,6 +16,10 @@ async function bootstrap() {
   const prismaService = app.get(PrismaService);
   const port = configservice.get<AppConfig>('app').port;
 
+  app.enableCors();
+
+  app.setGlobalPrefix('/api');
+
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
@@ -28,6 +32,7 @@ async function bootstrap() {
   setupSwagger(app);
 
   await prismaService.enableShutdownHooks(app);
+
   await app.listen(port);
 }
 bootstrap();
