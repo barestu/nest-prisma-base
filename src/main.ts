@@ -2,18 +2,17 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { PrismaService } from 'nestjs-prisma';
 import { AppModule } from './app.module';
+import { AppConfig } from './config/app.config';
 import { setupSwagger } from './swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const configService = app.get(ConfigService);
+  const configservice = app.get(ConfigService);
   const prismaService = app.get(PrismaService);
+  const port = configservice.get<AppConfig>('app').port;
 
-  // enable shutdown hook
   await prismaService.enableShutdownHooks(app);
-
   setupSwagger(app);
-
-  await app.listen(configService.get('app.port'));
+  await app.listen(port);
 }
 bootstrap();
