@@ -18,6 +18,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     });
   }
 
+  // TODO: JWT validate payload type
   async validate(payload) {
     const user = await this.usersService.findByEmail(payload.email);
     if (!user) throw new UnauthorizedException('Invalid token');
