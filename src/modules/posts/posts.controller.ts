@@ -6,11 +6,12 @@ import {
   Put,
   Param,
   Delete,
-  Request,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { User } from '@prisma/client';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
+import { CurrentUser } from 'src/decorators/user.decorator';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
@@ -24,8 +25,8 @@ export class PostsController {
   @ApiConsumes('application/x-www-form-urlencoded')
   @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Request() req, @Body() createPostDto: CreatePostDto) {
-    return this.postsService.create(req.user.id, createPostDto);
+  create(@CurrentUser() user: User, @Body() createPostDto: CreatePostDto) {
+    return this.postsService.create(user.id, createPostDto);
   }
 
   @Get()
@@ -34,20 +35,20 @@ export class PostsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.postsService.findOne(+id);
+  findOne(@Param('id') id: number) {
+    return this.postsService.findOne(id);
   }
 
   @ApiBearerAuth()
   @ApiConsumes('application/x-www-form-urlencoded')
   @Put(':id')
-  update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
-    return this.postsService.update(+id, updatePostDto);
+  update(@Param('id') id: number, @Body() updatePostDto: UpdatePostDto) {
+    return this.postsService.update(id, updatePostDto);
   }
 
   @ApiBearerAuth()
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.postsService.remove(+id);
+  remove(@Param('id') id: number) {
+    return this.postsService.remove(id);
   }
 }

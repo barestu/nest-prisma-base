@@ -5,10 +5,11 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  Request,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { User } from '@prisma/client';
+import { CurrentUser } from 'src/decorators/user.decorator';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { LocalAuthGuard } from 'src/guards/local-auth.guard';
 import { AuthService } from './auth.service';
@@ -25,8 +26,8 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @HttpCode(HttpStatus.OK)
   @Post('auth/login')
-  public login(@Request() req) {
-    return this.authService.login(req.user);
+  public login(@CurrentUser() user: User) {
+    return this.authService.login(user);
   }
 
   @ApiConsumes('application/x-www-form-urlencoded')
@@ -38,7 +39,7 @@ export class AuthController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get('profile')
-  public getProfile(@Request() req) {
-    return req.user;
+  public getProfile(@CurrentUser() user: User) {
+    return user;
   }
 }
