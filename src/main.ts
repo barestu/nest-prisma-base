@@ -6,8 +6,8 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { PrismaService } from 'nestjs-prisma';
-import { AppModule } from './app.module';
 import { AppConfig } from './config/app.config';
+import { AppModule } from './modules/app.module';
 import { setupSwagger } from './swagger';
 
 async function bootstrap() {

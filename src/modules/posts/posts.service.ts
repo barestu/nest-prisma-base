@@ -8,7 +8,7 @@ import { UpdatePostDto } from './dto/update-post.dto';
 export class PostsService {
   constructor(private prismaService: PrismaService) {}
 
-  create(payload: CreatePostDto): Promise<Post> {
+  create(userId: number, payload: CreatePostDto): Promise<Post> {
     return this.prismaService.post.create({
       data: {
         title: payload.title,

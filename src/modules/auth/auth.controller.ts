@@ -8,7 +8,7 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { LocalAuthGuard } from 'src/guards/local-auth.guard';
 import { AuthService } from './auth.service';
@@ -20,19 +20,22 @@ import { AuthRegisterDto } from './dto/auth-register.dto';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @UseGuards(LocalAuthGuard)
+  @ApiConsumes('application/x-www-form-urlencoded')
   @ApiBody({ type: AuthLoginDto })
+  @UseGuards(LocalAuthGuard)
   @HttpCode(HttpStatus.OK)
   @Post('auth/login')
   public login(@Request() req) {
     return this.authService.login(req.user);
   }
 
+  @ApiConsumes('application/x-www-form-urlencoded')
   @Post('auth/register')
   register(@Body() data: AuthRegisterDto) {
     return this.authService.register(data);
   }
 
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   public getProfile(@Request() req) {
