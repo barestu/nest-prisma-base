@@ -13,7 +13,10 @@ export class PostsService {
       data: {
         title: payload.title,
         content: payload.content,
-        author_id: 1,
+        author_id: userId,
+      },
+      include: {
+        author: true,
       },
     });
   }

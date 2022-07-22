@@ -12,6 +12,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { PostsModule } from './posts/posts.module';
 import { UsersModule } from './users/users.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -20,10 +21,18 @@ import { UsersModule } from './users/users.module';
       load: [appConfig, databaseConfig, authConfig],
       envFilePath: ['.env'],
     }),
-    PrismaModule.forRoot({ isGlobal: true }),
+    PrismaModule.forRoot({
+      isGlobal: true,
+      prismaServiceOptions: {
+        prismaOptions: {
+          log: ['query', 'info', 'warn', 'error'],
+        },
+      },
+    }),
     UsersModule,
     PostsModule,
     AuthModule,
+    CategoriesModule,
   ],
   controllers: [AppController],
   providers: [

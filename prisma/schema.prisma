@@ -11,23 +11,56 @@ datasource db {
 }
 
 model User {
-  id         Int      @id @default(autoincrement())
-  email      String   @unique
-  password   String
-  name       String
-  is_active  Boolean  @default(false)
-  posts      Post[]
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id              Int              @id @default(autoincrement())
+  email           String           @unique
+  password        String
+  name            String
+  is_active       Boolean          @default(false)
+  created_at      DateTime         @default(now())
+  updated_at      DateTime         @updatedAt
+  role            Role             @default(BASIC)
+  posts           Post[]
+  liked_posts     PostLike[]
+  user_preference UserPreference[]
+}
+
+model UserPreference {
+  id            Int     @id @default(autoincrement())
+  email_updates Boolean
+  user          User    @relation(fields: [user_id], references: [id])
+  user_id       Int
 }
 
 model Post {
-  id           Int      @id @default(autoincrement())
+  id           Int        @id @default(autoincrement())
   title        String
   content      String?
-  is_published Boolean  @default(false)
+  is_published Boolean    @default(false)
+  created_at   DateTime   @default(now())
+  updated_at   DateTime   @updatedAt
+  author       User?      @relation(fields: [author_id], references: [id])
   author_id    Int
-  author       User?    @relation(fields: [author_id], references: [id])
-  created_at   DateTime @default(now())
-  updated_at   DateTime @updatedAt
+  likes        PostLike[]
+  categories   Category[]
+}
+
+model PostLike {
+  id      Int  @id @default(autoincrement())
+  post    Post @relation(fields: [post_id], references: [id])
+  post_id Int
+  user    User @relation(fields: [user_id], references: [id])
+  user_id Int
+}
+
+model Category {
+  id         Int      @id @default(autoincrement())
+  name       String   @unique
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  posts      Post[]
+}
+
+enum Role {
+  BASIC
+  ADMIN
 }
