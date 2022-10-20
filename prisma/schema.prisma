@@ -41,7 +41,8 @@ model Post {
   author       User?      @relation(fields: [author_id], references: [id])
   author_id    Int
   likes        PostLike[]
-  categories   Category[]
+  category_id  Int
+  category     Category   @relation(fields: [category_id], references: [id])
 }
 
 model PostLike {
