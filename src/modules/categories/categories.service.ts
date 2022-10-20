@@ -10,7 +10,7 @@ export class CategoriesService {
   create(createCategoryDto: CreateCategoryDto) {
     return this.prismaService.category.create({
       data: {
-        name: createCategoryDto,
+        name: createCategoryDto.name,
       },
     });
   }
