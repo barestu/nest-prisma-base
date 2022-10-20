@@ -14,6 +14,7 @@ import { Response } from 'express';
 export class DatabaseExceptionFilter implements ExceptionFilter {
   catch(exception: Prisma.PrismaClientKnownRequestError, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
+    const request = ctx.getRequest<Request>();
     const response = ctx.getResponse<Response>();
     const mappedException = this.mapTypeError(exception);
     const status = mappedException.getStatus();
@@ -21,6 +22,7 @@ export class DatabaseExceptionFilter implements ExceptionFilter {
     response.status(status).json({
       statusCode: status,
       message: mappedException.message,
+      path: request.url,
     });
   }
 
